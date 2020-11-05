@@ -19,7 +19,7 @@ namespace BIOC_mrowki.Models
 
         }
 
-        public void Move(Labirynth labirynth, Field to)
+        public void Move(Labirynth labirynth, Point to)
         {
             labirynth.Board[to.X, to.Y] = this;
             labirynth.Board[X, Y] = new Feromon(X,Y, _lostFeromon);
