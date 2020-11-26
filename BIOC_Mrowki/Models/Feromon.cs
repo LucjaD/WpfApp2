@@ -11,9 +11,13 @@ namespace BIOC_mrowki.Models
     {
         public int Value { get; set; }
         public override Color Color => Color.DarkKhaki;
-        public Feromon(int x, int y, int value) : base(x, y)
+        public Ant Ant { get; set; }
+
+        public Feromon(int x, int y, int value, Ant ant) : base(x, y)
         {
             Value = value;
+            Ant = ant;
+
         }
     }
 }

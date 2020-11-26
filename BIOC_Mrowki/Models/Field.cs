@@ -17,11 +17,13 @@ namespace BIOC_mrowki.Models
 
         public int X { get; set; }
         public int Y { get; set; }
+        public Feromon F { get; set; }
 
-        public Field(int x, int y)
+        public Field( int x, int y)
         {
             X = x;
             Y = y;
+
         }
     }
 }

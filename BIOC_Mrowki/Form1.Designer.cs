@@ -30,27 +30,41 @@
         {
             this.components = new System.ComponentModel.Container();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.iterator = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // timer1
             // 
-            this.timer1.Interval = 1000;
+            this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // iterator
+            // 
+            this.iterator.AutoSize = true;
+            this.iterator.Location = new System.Drawing.Point(673, 68);
+            this.iterator.MinimumSize = new System.Drawing.Size(50, 50);
+            this.iterator.Name = "iterator";
+            this.iterator.Size = new System.Drawing.Size(50, 50);
+            this.iterator.TabIndex = 0;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(909, 709);
+            this.Controls.Add(this.iterator);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label iterator;
     }
 }
 

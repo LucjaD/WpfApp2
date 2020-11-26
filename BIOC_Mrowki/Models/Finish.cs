@@ -12,6 +12,7 @@ namespace BIOC_Mrowki.Models
     {
         public Finish(int x, int y) : base(x, y)
         {
+
         }
 
         public override Color Color => Color.Red;
