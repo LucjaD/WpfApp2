@@ -49,6 +49,9 @@ namespace BIOC_mrowki.Models
 
         public bool selectMove(Labirynth labirynth)
         {
+            double p1 = 0;
+            List<double> m1 = new List<double>();
+            List<double> m2 = new List<double>();
             var points = getPossibleMoves(labirynth);
             var poss = new Random();
             var possInt = poss.Next(0, 99);
@@ -56,10 +59,21 @@ namespace BIOC_mrowki.Models
 
             for (int i = 0; i < points.Count; i++)
             {
-                if (possInt >= i * propability && possInt <= (i + 1) * propability)
+            //    if (labirynth.Board[points[i].X, points[i].Y] is Feromon f)
+            //    {
+            //        m1.Add(f.Value);
+            //    }
+            //    else
+            //    {
+            //        m2.Add(1);
+            //    }
+            //}
+            //p1 = (Math.Pow(m1[i] + Feromon.k, Feromon.h)) / (Math.Pow(m1[i] + Feromon.k, Feromon.h) + Math.Pow(m2[i] + Feromon.k, Feromon.h));
+
+            if (possInt >= i * propability && possInt <= (i + 1) * propability)
                 {
 
-                    return Move(labirynth, points[i]); 
+                    return Move(labirynth, points[i]);
                 }
             }
             throw new Exception();
@@ -113,6 +127,10 @@ namespace BIOC_mrowki.Models
             return true;
         }
 
+        public bool isFeromone(int X, int Y, Labirynth labirynth)
+        {
+            return labirynth.Board[X, Y] is Feromon;
+        }
 
 
 
@@ -124,22 +142,22 @@ namespace BIOC_mrowki.Models
             backMode = true;
             int counter = 0;
 
-            if (!(labirynth.Board[X + 1, Y] is Feromon f && f.Ant == this) && (!(labirynth.Board[X + 1, Y] is Wall)))
+            if (isPermittedField(X + 1, Y, labirynth))
             {
                 counter++;
                 backPoints.Add(new Point(X + 1, Y));
             }
-            if (!(labirynth.Board[X - 1, Y] is Feromon f1 && f1.Ant == this) && (!(labirynth.Board[X - 1, Y] is Wall)))
+            if (isPermittedField(X - 1, Y, labirynth))
             {
                 counter++;
                 backPoints.Add(new Point(X - 1, Y));
             }
-            if (!(labirynth.Board[X, Y - 1] is Feromon f2 && f2.Ant == this) && (!(labirynth.Board[X, Y - 1] is Wall)))
+            if (isPermittedField(X, Y-1, labirynth))
             {
                 counter++;
                 backPoints.Add(new Point(X, Y - 1));
             }
-            if (!(labirynth.Board[X, Y + 1] is Feromon f3 && f3.Ant == this) && (!(labirynth.Board[X, Y + 1] is Wall)))
+            if (isPermittedField(X , Y+1, labirynth))
             {
                 counter++;
                 backPoints.Add(new Point(X, Y + 1));
@@ -152,46 +170,31 @@ namespace BIOC_mrowki.Models
             }
 
 
-            if (labirynth.Board[X + 1, Y] is Feromon )
+            if (isFeromone(X+1, Y, labirynth))
             {
                 points.Add(new Point(X + 1, Y));
 
             }
-            if (labirynth.Board[X - 1, Y] is Feromon)
+            if (isFeromone(X - 1, Y, labirynth))
             {
                 points.Add(new Point(X - 1, Y));
 
             }
-            if (labirynth.Board[X, Y - 1] is Feromon)
+            if (isFeromone(X , Y-1, labirynth))
             {
                 points.Add(new Point(X, Y - 1));
 
             }
-            if (labirynth.Board[X, Y + 1] is Feromon)
+            if (isFeromone(X , Y + 1, labirynth))
             {
                 points.Add(new Point(X, Y + 1));
 
             }
-
-            //if (backMode)
-            // {
-            // GoBackMove(points, labirynth);
+           
             return points;
-
-            //}
-            // else
-            //{
-            //    selectMove(labirynth);
-            //}
         }
 
-        // public void GoBackMove(List<Point> points, Labirynth labirynth)
-        //{
-        //    for (int i = 0; i < points.Count; i++)
-        //    {
-        //        Move(labirynth, points[i]);
-        //    }
-        //}
+        
     }
 
 }

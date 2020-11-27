@@ -12,8 +12,8 @@ namespace BIOC_mrowki.Models
     {
         public virtual Color Color { get => Color.White; }
 
-        public int With => 40;
-        public int Height => 40;
+        public int With => 30;
+        public int Height => 30;
 
         public int X { get; set; }
         public int Y { get; set; }

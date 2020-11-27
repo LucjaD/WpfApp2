@@ -10,14 +10,16 @@ namespace BIOC_mrowki.Models
     public class Feromon : Field
     {
         public int Value { get; set; }
+        
         public override Color Color => Color.DarkKhaki;
         public Ant Ant { get; set; }
+        public  const int k = 20;
+        public  const int h = 2; 
 
         public Feromon(int x, int y, int value, Ant ant) : base(x, y)
         {
             Value = value;
             Ant = ant;
-
         }
     }
 }
