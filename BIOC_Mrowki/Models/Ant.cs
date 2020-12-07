@@ -13,7 +13,8 @@ namespace BIOC_mrowki.Models
 {
     public class Ant : Field
     {
-        private const int _lostFeromon = 10;
+        private Field _currentField;
+        private const int _lostFeromon = 3000;
         bool backMode;
 
         public override Color Color => Color.Khaki;
@@ -31,10 +32,21 @@ namespace BIOC_mrowki.Models
             }
             if (!backMode)
             {
+                var helper = labirynth.Board[to.X, to.Y];
                 labirynth.Board[to.X, to.Y] = this;
-                labirynth.Board[X, Y] = new Feromon(X, Y, _lostFeromon, this);
+                if (_currentField != null && _currentField is Feromon f) 
+                { 
+                    f.Value += _lostFeromon;
+                    labirynth.Board[X, Y] = new Feromon(X, Y, f.Value, this);
+
+                }
+                else
+                {
+                    labirynth.Board[X, Y] = new Feromon(X, Y, _lostFeromon, this);
+                }
                 X = to.X;
                 Y = to.Y;
+                _currentField = helper;
 
             }
             else
@@ -50,32 +62,72 @@ namespace BIOC_mrowki.Models
         public bool selectMove(Labirynth labirynth)
         {
             double p1 = 0;
+            double p2 = 0;
+            double p3 = 0;
             List<double> m1 = new List<double>();
-            List<double> m2 = new List<double>();
             var points = getPossibleMoves(labirynth);
             var poss = new Random();
             var possInt = poss.Next(0, 99);
-            var propability = 100 / points.Count;
+
 
             for (int i = 0; i < points.Count; i++)
             {
-            //    if (labirynth.Board[points[i].X, points[i].Y] is Feromon f)
-            //    {
-            //        m1.Add(f.Value);
-            //    }
-            //    else
-            //    {
-            //        m2.Add(1);
-            //    }
-            //}
-            //p1 = (Math.Pow(m1[i] + Feromon.k, Feromon.h)) / (Math.Pow(m1[i] + Feromon.k, Feromon.h) + Math.Pow(m2[i] + Feromon.k, Feromon.h));
-
-            if (possInt >= i * propability && possInt <= (i + 1) * propability)
+                if (labirynth.Board[points[i].X, points[i].Y] is Feromon f)
                 {
+                    m1.Add(f.Value);
+                }
+                else
+                {
+                    m1.Add(500);
 
-                    return Move(labirynth, points[i]);
                 }
             }
+
+
+            if (m1.Count == 2)
+            {
+                p1 = ((Math.Pow(m1[0] + Feromon.k, Feromon.h)) / (Math.Pow(m1[0] + Feromon.k, Feromon.h) + Math.Pow(m1[1] + Feromon.k, Feromon.h))) * 100;
+                p2 = 100 - p1;
+                if (possInt <= p1)
+                {
+                    return Move(labirynth, points[0]);
+                }
+                else if (possInt > p1)
+                {
+                    return Move(labirynth, points[1]);
+                }
+            }
+            else if (m1.Count == 3)
+            {
+                p1 = ((Math.Pow(m1[0] + Feromon.k, Feromon.h)) / (Math.Pow(m1[0] + Feromon.k, Feromon.h) + Math.Pow(m1[1] + Feromon.k, Feromon.h) + Math.Pow(m1[2] + Feromon.k, Feromon.h))) * 100;
+                p2 = ((Math.Pow(m1[1] + Feromon.k, Feromon.h)) / (Math.Pow(m1[0] + Feromon.k, Feromon.h) + Math.Pow(m1[1] + Feromon.k, Feromon.h) + Math.Pow(m1[2] + Feromon.k, Feromon.h))) * 100;
+                p3 = 100 - p1 - p2;
+
+                // 0 p1 possInt <= p1
+                // p1 p1 + p2  possInt > p1 && possInt <= p1 + p2
+                // p1+ p2 >= possInt && possInt < 100
+              
+
+                if (possInt <= p1)
+                {
+                    return Move(labirynth, points[0]);
+                }
+                else if (possInt > p1 && possInt <= p1 + p2)
+                {
+                    return Move(labirynth, points[1]);
+                }
+                else if (p1 + p2 <= possInt)
+                {
+                    return Move(labirynth, points[2]);
+                }
+
+            }
+            else
+            {
+                return Move(labirynth, points[0]);
+            }
+
+
             throw new Exception();
 
         }
@@ -88,7 +140,7 @@ namespace BIOC_mrowki.Models
             {
 
 
-                if (X != labirynth.SizeX - 1 && isPermittedField(X+1, Y, labirynth))
+                if (X != labirynth.SizeX - 1 && isPermittedField(X + 1, Y, labirynth))
                 {
                     points.Add(new Point(X + 1, Y));
                 }
@@ -97,12 +149,12 @@ namespace BIOC_mrowki.Models
                     points.Add(new Point(X - 1, Y));
 
                 }
-                if (Y != 0 && isPermittedField(X, Y-1, labirynth))
+                if (Y != 0 && isPermittedField(X, Y - 1, labirynth))
                 {
                     points.Add(new Point(X, Y - 1));
 
                 }
-                if (Y != labirynth.SizeY - 1 && isPermittedField(X, Y+1, labirynth))
+                if (Y != labirynth.SizeY - 1 && isPermittedField(X, Y + 1, labirynth))
                 {
                     points.Add(new Point(X, Y + 1));
 
@@ -152,12 +204,12 @@ namespace BIOC_mrowki.Models
                 counter++;
                 backPoints.Add(new Point(X - 1, Y));
             }
-            if (isPermittedField(X, Y-1, labirynth))
+            if (isPermittedField(X, Y - 1, labirynth))
             {
                 counter++;
                 backPoints.Add(new Point(X, Y - 1));
             }
-            if (isPermittedField(X , Y+1, labirynth))
+            if (isPermittedField(X, Y + 1, labirynth))
             {
                 counter++;
                 backPoints.Add(new Point(X, Y + 1));
@@ -170,7 +222,7 @@ namespace BIOC_mrowki.Models
             }
 
 
-            if (isFeromone(X+1, Y, labirynth))
+            if (isFeromone(X + 1, Y, labirynth))
             {
                 points.Add(new Point(X + 1, Y));
 
@@ -180,21 +232,21 @@ namespace BIOC_mrowki.Models
                 points.Add(new Point(X - 1, Y));
 
             }
-            if (isFeromone(X , Y-1, labirynth))
+            if (isFeromone(X, Y - 1, labirynth))
             {
                 points.Add(new Point(X, Y - 1));
 
             }
-            if (isFeromone(X , Y + 1, labirynth))
+            if (isFeromone(X, Y + 1, labirynth))
             {
                 points.Add(new Point(X, Y + 1));
 
             }
-           
+
             return points;
         }
 
-        
+
     }
 
 }
